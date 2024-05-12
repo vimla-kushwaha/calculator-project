@@ -26,14 +26,28 @@ enum CalcButton: String{
     case decimal = "."
     case percent = "%"
     case negative = "-/+"
+    
+    var buttonColor:Color{
+        switch self{
+        case .add,.subtract,.multiply,.divide,.equal:
+            return .orange
+        case .clear,.negative,.percent:
+            return Color(.lightGray)
+        default:
+            return Color(UIColor(red: 55/255.0, 
+                                 green: 55/255.0,
+                                 blue: 55/255.0,
+                                 alpha: 1))
+        }
+        }
 }
 
 struct ContentView: View {
     let buttons:[[CalcButton]]=[
-        [.clear, .negative, .percent],
-        [.seven, .eight, .nine],
-        [.four, .five, .six],
-        [.one, .two, .three],
+        [.clear, .negative, .percent, .divide],
+        [.seven, .eight, .nine, .multiply],
+        [.four, .five, .six, .subtract],
+        [.one, .two, .three, .add],
         [.decimal, .zero, .equal]
     ]
     var body: some View {
@@ -41,6 +55,7 @@ struct ContentView: View {
             Color.black.edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             
             VStack{
+                Spacer()
                 //text
                 HStack{
                     Spacer()
@@ -54,25 +69,36 @@ struct ContentView: View {
                 
                 //button
                 ForEach(buttons, id:\.self){ row in
-                    HStack{
+                    HStack(spacing:12){
                         ForEach(row, id:\.self){ item in
                             Button(action:{
                             },label:{
                                 Text(item.rawValue)
                                     .font(.system(size: 32))
-                                    .frame(width: 70, height:70)
-                                    .background(Color.orange)
+                                    .frame(
+                                        width: self.buttonWidth(item: item),
+                                        height:self.buttonHeight()
+                                    )
+                                    .background(item.buttonColor)
                                     .foregroundColor(.white)
-                                    .cornerRadius(35)
+                                    .cornerRadius(self.buttonWidth(item: item)/2)
                             })
                         }
                     }
+                    .padding(.bottom,3)
                 }
                 
             }
         }
         .padding()
     }
+    func buttonWidth(item:CalcButton)-> CGFloat{
+        return (UIScreen.main.bounds.width-(5*12))/4
+    }
+    func buttonHeight()-> CGFloat{
+        return (UIScreen.main.bounds.width - (5*12))/4
+    }
+    
 }
 
 #Preview {
