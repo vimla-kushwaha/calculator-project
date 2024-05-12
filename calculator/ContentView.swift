@@ -42,13 +42,20 @@ enum CalcButton: String{
         }
 }
 
+enum Opertation{
+    case add, subtract, multiply, divide, equal, none
+}
+
 struct ContentView: View {
+    @State var value = "0"
+    
+    
     let buttons:[[CalcButton]]=[
         [.clear, .negative, .percent, .divide],
         [.seven, .eight, .nine, .multiply],
         [.four, .five, .six, .subtract],
         [.one, .two, .three, .add],
-        [.decimal, .zero, .equal]
+        [.zero, .decimal, .equal]
     ]
     var body: some View {
         ZStack{
@@ -59,7 +66,7 @@ struct ContentView: View {
                 //text
                 HStack{
                     Spacer()
-                    Text("0")
+                    Text(value)
                         .bold()
                         .font(.system(size: 64))
                         .foregroundColor(.white)
@@ -72,6 +79,7 @@ struct ContentView: View {
                     HStack(spacing:12){
                         ForEach(row, id:\.self){ item in
                             Button(action:{
+                                self.didTap(button: item)
                             },label:{
                                 Text(item.rawValue)
                                     .font(.system(size: 32))
@@ -92,7 +100,32 @@ struct ContentView: View {
         }
         .padding()
     }
+    func didTap(button:CalcButton){
+        switch button{
+        case .add, .subtract, .multiply,.divide, .equal:
+            if button == .add{
+                
+            }
+        case .decimal, .negative, .percent:
+            break
+        case .clear:
+            self.value="0"
+        default:
+            let number = button.rawValue
+            if (self.value == "0"){
+                value = number
+            }
+            else{
+                self.value = "\(self.value)\(number)"
+            }
+        }
+    }
+    
+    
     func buttonWidth(item:CalcButton)-> CGFloat{
+        if item == .zero{
+            return ((UIScreen.main.bounds.width-(4*12))/4)*2
+        }
         return (UIScreen.main.bounds.width-(5*12))/4
     }
     func buttonHeight()-> CGFloat{
